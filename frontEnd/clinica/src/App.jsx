@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import Profesional from "./pages/profesionales/Profesional";
 import LoginForm from "./components/LoginForm";
 import { AuthProvider } from "./context/authContext";
+import ActivateAccount from "./components/ActivateAccount";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/citas" element={<Citas />} />
             <Route path="/profesionales" element={<Profesional/>} />
             <Route path="/login" element={<LoginForm/>} />
+            <Route path="auth/activate/:uid/:token" element={<ActivateAccount/>} />
           </Routes>
         </main>
         <Footer />
