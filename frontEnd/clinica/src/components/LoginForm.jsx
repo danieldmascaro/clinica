@@ -62,6 +62,9 @@ function LoginForm() {
           <button type="submit" className="bg-blue-400 p-2 hover:bg-blue-300 text-blue-900 rounded-xl">
             Iniciar sesión
           </button>
+          <div>
+            <h1>¿No tienes cuenta? <Link to="/signup">Crea una aquí</Link></h1>
+          </div>
         </form>
       </div>
     </div>
