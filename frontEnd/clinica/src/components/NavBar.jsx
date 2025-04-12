@@ -32,6 +32,7 @@ const NavBar = () => {
         <>
           <Link to="/" className=" hover:text-blue-400 ">Home</Link>
           <Link to="/citas" className="hover:text-blue-400">Editar Base de Datos</Link>
+          <Link to="/crearmedico" className="hover:text-blue-400">Crear cuentas de médico</Link>
           <Link to="/login" className="hover:text-blue-400">Editar contenido</Link>
         </>
       )}

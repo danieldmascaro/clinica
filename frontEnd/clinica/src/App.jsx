@@ -10,6 +10,9 @@ import LoginForm from "./components/LoginForm";
 import { AuthProvider } from "./context/authContext";
 import ActivateAccount from "./components/ActivateAccount";
 import SignUpForm from "./components/SignUpForm";
+import ReSendMail from "./components/ReSendMail";
+import AccountCreated from "./components/AccountCreated";
+import CrearMedico from "./pages/create/CrearMedico";
 
 function App() {
   return (
@@ -17,7 +20,7 @@ function App() {
       <AuthProvider>
         <Header></Header>
         <NavBar></NavBar>
-        <main className="bg-[rgb(15,46,132)] p-4 min-h-149">
+        <main className="bg-[rgb(15,46,132)] p-4 min-h-149 max-h-149">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/citas" element={<Citas />} />
@@ -25,6 +28,9 @@ function App() {
             <Route path="/login" element={<LoginForm/>} />
             <Route path="/signup" element={<SignUpForm/>} />
             <Route path="auth/activate/:uid/:token" element={<ActivateAccount/>} />
+            <Route path="/resendmail" element={<ReSendMail/>} />
+            <Route path="/accountcreated" element={<AccountCreated/>} />
+            <Route path="/crearmedico" element={<CrearMedico/>} />
           </Routes>
         </main>
         <Footer />

@@ -11,9 +11,9 @@ SECRET_KEY = 'django-insecure-3ootb#&yv0h&-*#=d=n0yco86dfs@wne=ps+el$!#p8b*wj+kd
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
-
+CORS_EXPOSE_HEADERS = ['Access-Control-Allow-Credentials']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -30,7 +30,14 @@ INSTALLED_APPS = [
     'djoser', 
 ]
 
+CSRF_COOKIE_HTTPONLY = False  # Para que JavaScript pueda acceder a la cookie
+
+CSRF_COOKIE_SECURE = False  # En desarrollo, lo puedes dejar como False
+
+CORS_ALLOW_CREDENTIALS = True
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -38,7 +45,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'clinica.urls'
@@ -150,10 +157,29 @@ DOMAIN = 'localhost:5173'
 
 SITE_NAME = 'clinica'
 
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+]
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://localhost:5174',
 ]
+
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+)
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',  
+]
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
