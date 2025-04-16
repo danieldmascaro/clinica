@@ -1,125 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <meta name="robots" content="NONE,NOARCHIVE">
-    <title>403 Forbidden</title>
-    <style>
-        html * {
-            padding: 0;
-            margin: 0;
-        }
-
-        body * {
-            padding: 10px 20px;
-        }
-
-        body * * {
-            padding: 0;
-        }
-
-        body {
-            font-family: sans-serif;
-            background: #eee;
-            color: #000;
-        }
-
-        body>div {
-            border-bottom: 1px solid #ddd;
-        }
-
-        h1 {
-            font-weight: normal;
-            margin-bottom: .4em;
-        }
-
-        h1 span {
-            font-size: 60%;
-            color: #666;
-            font-weight: normal;
-        }
-
-        #info {
-            background: #f6f6f6;
-        }
-
-        #info ul {
-            margin: 0.5em 4em;
-        }
-
-        #info p,
-        #summary p {
-            padding-top: 10px;
-        }
-
-        #summary {
-            background: #ffc;
-        }
-
-        #explanation {
-            background: #eee;
-            border-bottom: 0px none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clínica SaludVida</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-blue-50 text-gray-800">
 
-<body>
-    <div id="summary">
-        <h1>Forbidden <span>(403)</span></h1>
-        <p>CSRF verification failed. Request aborted.</p>
+  <!-- Header -->
+  <header class="bg-white shadow-md p-6 flex justify-between items-center">
+    <!-- Título y lema centrados -->
+    <div class="flex flex-col items-center">
+      <h1 class="text-3xl font-semibold text-blue-700">Clínica SaludVida</h1>
+      <p class="text-sm text-gray-500">Tu bienestar es nuestra prioridad</p>
+    </div>
+  
+    <!-- Texto "Profesionales de la salud" pegado a la derecha -->
+    <div class="text-right text-sm text-blue-600 font-medium">
+      <a href="#" class="hover:text-blue-400">Profesionales de la Salud</a>
+    </div>
+  </header>
 
+  <!-- Barra de navegación -->
+  <nav class="bg-blue-100 border-t border-b border-blue-200 py-2">
+    <ul class="flex justify-center gap-6 text-blue-700 text-sm font-medium">
+      <li><a href="#" class="hover:underline">Inicio</a></li>
+      <li><a href="#" class="hover:underline">Servicios</a></li>
+      <li><a href="#" class="hover:underline">Especialistas</a></li>
+      <li><a href="#" class="hover:underline">Reservas</a></li>
+      <li><a href="#" class="hover:underline">Contacto</a></li>
+    </ul>
+  </nav>
 
-        <p>You are seeing this message because this site requires a CSRF cookie when submitting forms. This cookie is
-            required for security reasons, to ensure that your browser is not being hijacked by third parties.</p>
-        <p>If you have configured your browser to disable cookies, please re-enable them, at least for this site, or for
-            “same-origin” requests.</p>
+  <!-- Cuerpo principal -->
+  <main class="p-6 max-w-6xl mx-auto mt-6 space-y-10">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl shadow-md p-4 hover:shadow-lg transition">
+        <h2 class="text-xl font-semibold text-blue-700 mb-2">Medicina General</h2>
+        <p class="text-sm text-gray-600">Consulta médica general para adultos y niños. Atención integral y personalizada.</p>
+      </div>
 
+      <div class="bg-white rounded-2xl shadow-md p-4 hover:shadow-lg transition">
+        <h2 class="text-xl font-semibold text-blue-700 mb-2">Pediatría</h2>
+        <p class="text-sm text-gray-600">Cuidados médicos para los más pequeños, en un entorno cálido y seguro.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-md p-4 hover:shadow-lg transition">
+        <h2 class="text-xl font-semibold text-blue-700 mb-2">Exámenes y Diagnóstico</h2>
+        <p class="text-sm text-gray-600">Laboratorio clínico, imagenología y más para un diagnóstico preciso y oportuno.</p>
+      </div>
     </div>
 
-    <div id="info">
-        <h2>Help</h2>
+    <!-- Formulario de contacto -->
+    <section class="bg-white rounded-2xl shadow-md p-6 max-w-2xl mx-auto">
+      <h2 class="text-2xl font-semibold text-blue-700 mb-4 text-center">Solicita una cita</h2>
+      <form action="#" method="POST" class="space-y-4">
+        <div>
+          <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre completo</label>
+          <input type="text" id="nombre" name="nombre" required
+                 class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+          <input type="email" id="email" name="email" required
+                 class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+        </div>
+        <div>
+          <label for="mensaje" class="block text-sm font-medium text-gray-700">Mensaje / Motivo</label>
+          <textarea id="mensaje" name="mensaje" rows="4" required
+                    class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></textarea>
+        </div>
+        <div class="text-center">
+          <button type="submit"
+                  class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition">
+            Enviar solicitud
+          </button>
+        </div>
+      </form>
+    </section>
 
-        <p>Reason given for failure:</p>
-        <pre>
-    CSRF cookie not set.
-    </pre>
+  </main>
 
-
-        <p>In general, this can occur when there is a genuine Cross Site Request Forgery, or when
-            <a href="https://docs.djangoproject.com/en/5.2/ref/csrf/">Django’s
-                CSRF mechanism</a> has not been used correctly. For POST forms, you need to
-            ensure:
-        </p>
-
-        <ul>
-            <li>Your browser is accepting cookies.</li>
-
-            <li>The view function passes a <code>request</code> to the template’s <a
-                    href="https://docs.djangoproject.com/en/5.2/topics/templates/#django.template.backends.base.Template.render"><code>render</code></a>
-                method.</li>
-
-            <li>In the template, there is a <code>{% csrf_token
-    %}</code> template tag inside each POST form that
-                targets an internal URL.</li>
-
-            <li>If you are not using <code>CsrfViewMiddleware</code>, then you must use
-                <code>csrf_protect</code> on any views that use the <code>csrf_token</code>
-                template tag, as well as those that accept the POST data.
-            </li>
-
-            <li>The form has a valid CSRF token. After logging in in another browser
-                tab or hitting the back button after a login, you may need to reload the
-                page with the form, because the token is rotated after a login.</li>
-        </ul>
-
-        <p>You’re seeing the help section of this page because you have <code>DEBUG =
-  True</code> in your Django settings file. Change that to <code>False</code>,
-            and only the initial error message will be displayed. </p>
-
-        <p>You can customize this page using the CSRF_FAILURE_VIEW setting.</p>
-    </div>
+  <!-- Footer -->
+  <footer class="bg-white border-t mt-10 py-6 text-center text-sm text-gray-500">
+    © 2025 Clínica SaludVida. Todos los derechos reservados.
+  </footer>
 
 </body>
-
 </html>

@@ -4,7 +4,6 @@ import NavBar from "./components/NavBar";
 import Home from "./pages/home/HomePage";
 import Citas from "./pages/citas/Citas";
 import Header from "./components/Header";
-import Footer from "./components/Footer";
 import Profesional from "./pages/profesionales/Profesional";
 import LoginForm from "./components/LoginForm";
 import { AuthProvider } from "./context/authContext";
@@ -13,6 +12,10 @@ import SignUpForm from "./components/SignUpForm";
 import ReSendMail from "./components/ReSendMail";
 import AccountCreated from "./components/AccountCreated";
 import CrearMedico from "./pages/create/CrearMedico";
+import RedireccionLogin from "./components/RedireccionLogin";
+import CambiarContrasena from "./components/CambiarContrasena";
+import CrearPasswordMedico from "./components/CrearPasswordMedico";
+
 
 function App() {
   return (
@@ -20,7 +23,7 @@ function App() {
       <AuthProvider>
         <Header></Header>
         <NavBar></NavBar>
-        <main className="bg-[rgb(15,46,132)] p-4 min-h-149 max-h-149">
+        <main className="p-4 flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/citas" element={<Citas />} />
@@ -31,9 +34,11 @@ function App() {
             <Route path="/resendmail" element={<ReSendMail/>} />
             <Route path="/accountcreated" element={<AccountCreated/>} />
             <Route path="/crearmedico" element={<CrearMedico/>} />
+            <Route path="/redireccionlogin" element={<RedireccionLogin/>} />
+            <Route path="/cambiarcontrasena" element={<CambiarContrasena/>} />
+            <Route path="/crearpassmedico" element={<CrearPasswordMedico/>} />
           </Routes>
         </main>
-        <Footer />
       </AuthProvider>
       
     </>

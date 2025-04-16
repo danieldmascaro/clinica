@@ -9,6 +9,9 @@ const ActivateAccount = () => {
     useEffect(() => {
         const activateUser = async () => {
           try {
+            const tipoRes = await fetch(`http://127.0.0.1:8000/api/get-tipo-usuario/?uid=${uid}`);
+            const tipoData = await tipoRes.json();
+            const tipoUsuario = tipoData.tipo_usuario;
             const response = await fetch("http://127.0.0.1:8000/auth/users/activation/", {
               method: "POST",
               headers: {
@@ -18,8 +21,13 @@ const ActivateAccount = () => {
             });
     
             if (response.status === 204) {
-              setMessage("¡Cuenta activada con éxito! Redirigiendo al login...");
-              setTimeout(() => navigate("/login"), 3000);
+              if (tipoUsuario === "medico") {
+                setMessage("Cuenta activada. Redirigiendo para crear contraseña...");
+                setTimeout(() => navigate("/crearpassmedico", {state: { uid, token }}), 3000);
+              }else{
+                setMessage("¡Cuenta activada con éxito! Redirigiendo al login...");
+                setTimeout(() => navigate("/login"), 3000);
+              }
             } else if (response.status === 403) {
               setMessage("La cuenta ya fue activada previamente.");
             } else {

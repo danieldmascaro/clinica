@@ -3,7 +3,6 @@ export const SignUp = async (
   rut, email, fecha_nacimiento, telefono,
   genero, password, re_password
 ) => {
-  // Obtener el csrfToken
   const csrfResponse = await fetch('http://localhost:8000/api/csrf-token/', {
     credentials: 'include',
   });

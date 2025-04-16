@@ -31,7 +31,6 @@ function SignUpForm() {
       );
       navigate("/accountcreated", { state: { formData: data } })
     } catch (err) {
-      // Manejar errores de registro
       alert(err);
     }
   };
@@ -51,7 +50,7 @@ function SignUpForm() {
 
   return (
     <div className="flex justify-center">
-      <div className="flex justify-center flex-col items-center gap-4 rounded-xl p-15 text-blue-50 bg-[#051850] mt-15 shadow-2xl shadow-[#070f27]">
+      <div className="flex justify-center flex-col items-center gap-4 rounded-xl p-15 text-blue-700 bg-white mt-15 shadow-2xl shadow-[#070f27]">
         <h1 className="text-3xl mb-4">Crear cuenta</h1>
         <form onSubmit={handleSubmit(handleSignUp)} className="flex flex-col h-max gap-2">
           {/* Nombres */}
@@ -59,7 +58,8 @@ function SignUpForm() {
           <input
             type="text"
             placeholder="Ingresa ambos nombres"
-            {...register("nombres", { required: "Campo obligatorio", pattern: { value: /.{3,}/, message: "Debe tener más de 3 caracteres" } })}
+            {...register("nombres", { required: "Campo obligatorio", 
+              pattern: { value: /.{3,}/, message: "Debe tener más de 3 caracteres" } })}
             className="p-2 bg-blue-100 text-blue-900 placeholder:text-blue-900 focus:bg-blue-300 duration-300 rounded-xl"
           />
           {errors.nombres && <span className="text-red-500">{errors.nombres.message}</span>}

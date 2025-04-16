@@ -1,11 +1,13 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('access') || null);
     const [user, setUser] = useState(null);
+    const navigate = useNavigate()
     const logout = () => {
         setUser(null);
         setToken(null);
@@ -57,7 +59,6 @@ export const AuthProvider = ({ children }) => {
             if (response.ok) {
                 const userData = await response.json();
                 setUser(userData);
-                console.log("Datos del usuario cargados:", userData);
             } else if (response.status === 401) {
                 console.warn('Access token expirado. Intentando refrescar...');
                 await refreshAccessToken(); 
@@ -73,21 +74,24 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         if (token) {
             fetchUserDetails();
-        } else {
-            setUser(null);
         }
+        const interval = setInterval(() => {
+            refreshAccessToken();
+        }, 4*60*1000)
+        return () => clearInterval(interval);
     }, [token]);
-
+    const tipoUsuario = user?.tipo_usuario || null;
     return (
-        <AuthContext.Provider value={{ token, setToken, user, setUser, logout }}>
+        <AuthContext.Provider value={{ token, setToken, user, setUser, logout, tipoUsuario }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-export const useAuth = () => {
+const useAuth = () => {
     return useContext(AuthContext);
 };
+export {AuthProvider, useAuth};
 
 
 

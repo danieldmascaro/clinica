@@ -1,8 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.contrib.auth.hashers import make_password, is_password_usable
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-from django.utils import timezone
 
 class CustomUserManager(BaseUserManager):
     def master_create_user(self, rut, password, **extra_fields):
@@ -44,7 +42,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     fecha_registro = models.DateField(auto_now_add=True, blank=True, null=True)
     tipo_usuario = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
 
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
     objects = CustomUserManager()
@@ -55,16 +53,29 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.nombres} {self.primer_apellido} ({self.rut})"
+
+class PerfilPaciente(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    historial_médico = models.TextField(blank=True, default=" ")   
+    
+    def __str__(self):
+        return f"{self.user.nombres} {self.user.primer_apellido} ({self.user.rut})"     
         
 class PerfilMedico(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to="medicos/", blank=True, null=True)
     fecha_ingreso = models.DateTimeField(null=True, blank=True)
+    especialidad = models.ManyToManyField("Especialidad", related_name=("medicoEspecialidad"))
+    
+    def __str__(self):
+        return f"{self.user.nombres} {self.user.primer_apellido} ({self.user.rut})"
 
-class PerfilPaciente(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    historial_médico = models.TextField(blank=True, default=" ")        
-        
+class Especialidad(models.Model):
+    nombre = models.CharField(max_length=50) 
+    
+    def __str__(self):
+        return f"{self.nombre}"
+         
 
 class Region(models.Model):
     nombre = models.CharField(max_length=100)
@@ -94,3 +105,15 @@ class Prevision(models.Model):
     def __str__(self):
         return f"{self.tipo} {self.nombre}"
 
+class Cita(models.Model):
+    ESTADO_CHOICES = (
+        ('P', 'pendiente'),
+        ('C', 'cancelada'),
+        ('A', 'ausente'),
+        ('R', 'realizada'),
+        )
+    
+    paciente = models.ForeignKey("PerfilPaciente", on_delete=models.CASCADE)
+    medico = models.ForeignKey("PerfilMedico", on_delete=models.CASCADE)
+    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES)
+    
