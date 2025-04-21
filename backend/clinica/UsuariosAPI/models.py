@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 from django.db import models
+from datetime import timedelta
 
 class CustomUserManager(BaseUserManager):
     def master_create_user(self, rut, password, **extra_fields):
@@ -111,9 +113,76 @@ class Cita(models.Model):
         ('C', 'cancelada'),
         ('A', 'ausente'),
         ('R', 'realizada'),
-        )
-    
+    )
+
     paciente = models.ForeignKey("PerfilPaciente", on_delete=models.CASCADE)
     medico = models.ForeignKey("PerfilMedico", on_delete=models.CASCADE)
     estado = models.CharField(max_length=10, choices=ESTADO_CHOICES)
+    inicio = models.DateTimeField()
+    fin = models.DateTimeField(blank=True, null=True)
+
+    def clean(self):
+        if not self.fin:
+            self.fin = self.inicio + timedelta(minutes=30)
+
+        conflicto_medico = Cita.objects.filter(
+            medico=self.medico,
+            inicio__lt=self.fin,
+            fin__gt=self.inicio
+        ).exclude(id=self.id)
+
+        if conflicto_medico.exists():
+            raise ValidationError("El médico ya tiene una cita en ese horario.")
+
+        conflicto_paciente = Cita.objects.filter(
+            paciente=self.paciente,
+            inicio__lt=self.fin,
+            fin__gt=self.inicio
+        ).exclude(id=self.id)
+
+        if conflicto_paciente.exists():
+            raise ValidationError("El paciente ya tiene una cita en ese horario.")
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
     
+class HoraDisponible(models.Model):
+    medico = models.ForeignKey("PerfilMedico", on_delete=models.CASCADE)
+    inicio = models.DateTimeField()
+    fin = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        unique_together = ('medico', 'inicio')
+        ordering = ['inicio']
+
+    def clean(self):
+        if not self.fin:
+            self.fin = self.inicio + timedelta(minutes=30)
+
+        from .models import Cita 
+
+        conflicto_cita = Cita.objects.filter(
+            medico=self.medico,
+            inicio__lt=self.fin,
+            fin__gt=self.inicio
+        )
+
+        if conflicto_cita.exists():
+            raise ValidationError("El médico ya tiene una cita en este horario.")
+
+        conflicto_hora = HoraDisponible.objects.filter(
+            medico=self.medico,
+            inicio__lt=self.fin,
+            fin__gt=self.inicio
+        ).exclude(id=self.id)
+
+        if conflicto_hora.exists():
+            raise ValidationError("Ya existe otra hora disponible que se superpone con este horario.")
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.medico} disponible de {self.inicio.strftime('%H:%M')} a {self.fin.strftime('%H:%M')}"

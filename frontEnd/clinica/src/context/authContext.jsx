@@ -19,8 +19,6 @@ const AuthProvider = ({ children }) => {
     const refreshAccessToken = async () => {
         const refresh = localStorage.getItem('refresh');
         if (!refresh) {
-            console.warn('No hay refresh token. Cerrando sesión.');
-            logout();
             return;
         }
 

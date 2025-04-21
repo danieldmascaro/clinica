@@ -126,6 +126,7 @@ class CustomMedicoRegisterSerializer(serializers.ModelSerializer):
 class MedicoSerializer(serializers.ModelSerializer):
     especialidad = EspecialidadSerializer(source="perfilmedico.especialidad", many=True, read_only=True)
     avatar = serializers.ImageField(source="perfilmedico.avatar", read_only=True)
+    id_perfil = serializers.IntegerField(source="perfilmedico.id", read_only=True)
     class Meta:
         model = CustomUser
         fields = [
@@ -144,8 +145,21 @@ class MedicoSerializer(serializers.ModelSerializer):
             "comuna",
             "prevision",
             "especialidad",
+            "id_perfil",
             ]
+
+class MedicoIdNombre(serializers.ModelSerializer):
+    especialidad = EspecialidadSerializer(source="perfilmedico.especialidad", many=True, read_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ["id", "nombres", "primer_apellido", "segundo_apellido", "especialidad"]
         
+class HoraDisponibleSerializer(serializers.ModelSerializer):
+    medico = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
+    class Meta:
+        model = HoraDisponible
+        fields = ['inicio', 'fin', 'medico']
 
 class RegionSerializer(serializers.ModelSerializer):
     class Meta:

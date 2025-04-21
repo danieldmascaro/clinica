@@ -1,89 +1,112 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../../components/Button";
+import SelectField from "../../components/SelectField";
+import InputField from "../../components/InputField";
+import Formulario from "../../components/Formulario";
+import { displayGridCols } from "../../components/Formulario";
 
 const CrearMedico = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm();
 
   const [regiones, setRegiones] = useState([]);
   const [ciudades, setCiudades] = useState([]);
   const [comunas, setComunas] = useState([]);
-  const [especialidades, setEspecialidad] = useState([])
-  const [previsiones, setPrevision] = useState([])
+  const [especialidad, setEspecialidad] = useState([]);
+  const [previsiones, setPrevision] = useState([]);
+
   const token = localStorage.getItem("access");
 
   useEffect(() => {
     Promise.all([
-      fetch("http://127.0.0.1:8000/api/regiones", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).then((response) => response.json()),
-
-      fetch("http://127.0.0.1:8000/api/ciudades", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).then((response) => response.json()),
-
-      fetch("http://127.0.0.1:8000/api/comunas", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).then((response) => response.json()),
+      fetch("http://127.0.0.1:8000/api/regiones", {}).then((response) =>
+        response.json()
+      ),
+      fetch("http://127.0.0.1:8000/api/ciudades", {}).then((response) =>
+        response.json()
+      ),
+      fetch("http://127.0.0.1:8000/api/comunas", {}).then((response) =>
+        response.json()
+      ),
       fetch("http://127.0.0.1:8000/api/especialidad", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       }).then((response) => response.json()),
-      fetch("http://127.0.0.1:8000/api/previsiones", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).then((response) => response.json()),
+      fetch("http://127.0.0.1:8000/api/previsiones", {}).then((response) =>
+        response.json()
+      ),
     ])
       .then(([regiones, ciudades, comunas, especialidades, previsiones]) => {
-        setRegiones(regiones);
-        setCiudades(ciudades);
-        setComunas(comunas);
-        setEspecialidad(especialidades);
-        setPrevision(previsiones);
+        setRegiones(
+          regiones.map((esp) => ({
+            value: esp.id,
+            label: esp.nombre,
+          }))
+        );
+        setCiudades(
+          ciudades.map((esp) => ({
+            value: esp.id,
+            label: esp.nombre,
+          }))
+        );
+        setComunas(
+          comunas.map((esp) => ({
+            value: esp.id,
+            label: esp.nombre,
+          }))
+        );
+        setEspecialidad(
+          especialidades.map((esp) => ({
+            value: esp.id,
+            label: esp.nombre,
+          }))
+        );
+        setPrevision(
+          previsiones.map((esp) => ({
+            value: esp.id,
+            label: esp.nombre,
+          }))
+        );
       })
       .catch((error) => console.error("Error cargando locaciones:", error));
   }, []);
 
-  const desplegar = () => {
-    console.log(especialidades);
-  };
+  const generoChoices = [
+    { value: "M", label: "Masculino" },
+    { value: "F", label: "Femenino" },
+    { value: "O", label: "Prefiero no especificar." },
+  ];
 
   const onSubmit = async (data) => {
     const formData = new FormData();
+    console.log(data);
     Object.entries(data).forEach(([key, value]) => {
       if (key === "avatar") {
-        formData.append(key, value[0]); // Para el avatar (que es un archivo)
+        formData.append(key, value[0]);
       } else if (key === "especialidad") {
-        // Si es especialidad (múltiple), agregar cada especialidad como un item separado
         value.forEach((esp) => {
-          formData.append(key, esp); // Para agregar especialidades individuales
+          formData.append(key, esp);
         });
       } else {
         formData.append(key, value);
       }
     });
-  
+
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/registro-medicos/", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
- 
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/registro-medicos/",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+
       if (!response.ok) throw new Error("Error en el servidor");
       alert("Cuenta creada exitosamente");
       reset();
@@ -94,209 +117,175 @@ const CrearMedico = () => {
 
   return (
     <div className="flex justify-center">
-      <div className="flex justify-center flex-col items-center gap-4 rounded-xl p-15 text-blue-700 font-bold bg-white mt-15 shadow-2xl shadow-[#070f27]">
-        <h1 className="text-3xl mb-4">Crear cuenta</h1>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col h-max gap-2"
-        >
-          <label>Nombres</label>
-          <input
-            type="text"
-            name="nombres"
-            placeholder="Ingresa ambos nombres"
-            required
-            className="p-2 border rounded"
-            {...register("nombres", {
-              required: "Campo obligatorio",
-              pattern: {
-                value: /.{3,}/,
-                message: "Debe tener más de 3 caracteres",
-              },
-            })}
-          />
-          <label>Primer apellido</label>
-          <input
-            type="text"
-            name="primer_apellido"
-            placeholder="Ingresa el primer apellido"
-            required
-            className="p-2 border rounded"
-            {...register("primer_apellido", {
-              required: "Campo obligatorio",
-              pattern: {
-                value: /.{3,}/,
-                message: "Debe tener más de 3 caracteres",
-              },
-            })}
-          />
-          <label>Segundo apellido</label>
-          <input
-            type="text"
-            name="segundo_apellido"
-            placeholder="Ingresa el segundo apellido"
-            required
-            className="p-2 border rounded"
-            {...register("segundo_apellido", {
-              required: "Campo obligatorio",
-              pattern: {
-                value: /.{3,}/,
-                message: "Debe tener más de 3 caracteres",
-              },
-            })}
-          />
-          <label>Rut</label>
-          <input
-            type="text"
-            name="rut"
-            placeholder="Ingresa el rut"
-            required
-            className="p-2 border rounded"
-            {...register("rut", {
-              required: "Campo obligatorio",
-              pattern: {
-                value: /^\d{7,8}-[0-9Kk]$/,
-                message: "Debe tener más de 3 caracteres",
-              },
-            })}
-          />
-          <label>Fecha de nacimiento</label>
-          <input
-            type="date"
-            name="fecha_nacimiento"
-            placeholder="Ingresa fecha de nacimiento"
-            required
-            className="p-2 border rounded"
-            {...register("fecha_nacimiento", { required: "Campo obligatorio" })}
-          />
-          <label>Género</label>
-          <select
-            name="genero"
-            required
-            className="p-2 border rounded"
-            {...register("genero", { required: "Campo obligatorio" })}>
-              <option value="M">Masculino</option>
-              <option value="F">Femenino</option>
-              <option value="O">Prefiero no especificar</option>
-            </select>
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            placeholder="Ingresa el email"
-            required
-            className="p-2 border rounded"
-            {...register("email", {
-              required: "Campo obligatorio",
-              pattern: {
-                value: /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/,
-                message: "Debe tener más de 3 caracteres",
-              },
-            })}
-          />
-          <label>Teléfono</label>
-          <input
-            type="text"
-            name="telefono"
-            placeholder="Ingrese número de teléfono"
-            required
-            className="p-2 border rounded"
-            {...register("telefono", {
-              required: "Campo obligatorio",
-              pattern: {
-                value: /.{3,}/,
-                message: "Debe tener más de 3 caracteres",
-              },
-            })}
-          />
-          <label>Región</label>
-          <select
-            type="text"
-            name="region"
-            required
-            className="p-2 border rounded"
-            {...register("region", { required: "Campo obligatorio" })}
-          >
-            <option value="">Selecciona una región</option>
-            {regiones.map((region) => (
-              <option key={region.id} value={region.id}>
-                {region.nombre}
-              </option>
-            ))}
-          </select>
-          <label>Ciudad</label>
-          <select
-            type="text"
-            name="ciudad"
-            required
-            className="p-2 border rounded"
-            {...register("ciudad", { required: "Campo obligatorio" })}
-          >
-            <option value="">Selecciona una región</option>
-            {ciudades.map((ciudad) => (
-              <option key={ciudad.id} value={ciudad.id}>
-                {ciudad.nombre}
-              </option>
-            ))}
-          </select>
-          <label>Comuna</label>
-          <select
-            type="text"
-            name="comuna"
-            required
-            className="p-2 border rounded"
-            {...register("comuna", { required: "Campo obligatorio" })}>
-            <option value="">Selecciona una región</option>
-              {comunas.map((comuna) => (
-                <option key={comuna.id} value={comuna.id}>
-                  {comuna.nombre}
-                </option>
-              ))}
-          </select>
-          <label>Especialidad</label>
-          <select
-            multiple
-            required
-            className="p-2 border rounded"
-            {...register("especialidad", { required: "Campo obligatorio" })}
-          >
-            <option value="">Selecciona una especialidad</option>
-            {especialidades.map((esp) => (
-              <option key={esp.id} value={esp.id}>
-                {esp.nombre}
-              </option>
-            ))}
-            </select>
-          <label>Previsión de salud</label>
-          <select
-            multiple
-            required
-            className="p-2 border rounded"
-            {...register("prevision", { required: "Campo obligatorio" })}
-          >
-            <option value="">Selecciona una especialidad</option>
-            {previsiones.map((prevision) => (
-              <option key={prevision.id} value={prevision.id}>
-                {prevision.nombre}
-              </option>
-            ))}
-            </select>
+      <Formulario
+        titulo="Crear médico"
+        onSubmit={handleSubmit(onSubmit)}
+        className={displayGridCols}
+      >
+        <InputField
+          name="nombres"
+          label="Nombres"
+          type="text"
+          placeholder="Ingresa los dos primeros nombres"
+          control={control}
+          rules={{
+            required: "Campo obligatorio",
+            pattern: {
+              value: /.{3,}/,
+              message: "Debe tener más de 3 caracteres",
+            },
+          }}
+        />
+        <InputField
+          name="primer_apellido"
+          label="Primer apellido"
+          type="text"
+          placeholder="Ingresa el primer apellido"
+          control={control}
+          rules={{
+            required: "Campo obligatorio",
+            pattern: {
+              value: /.{3,}/,
+              message: "Debe tener más de 3 caracteres",
+            },
+          }}
+        />
+        <InputField
+          name="segundo_apellido"
+          label="Segundo apellido"
+          type="text"
+          placeholder="Ingresa el segundo apellido"
+          control={control}
+          rules={{
+            required: "Campo obligatorio",
+            pattern: {
+              value: /.{3,}/,
+              message: "Debe tener más de 3 caracteres",
+            },
+          }}
+        />
+        <InputField
+          name="rut"
+          label="Rut"
+          type="text"
+          placeholder="12345678-9 (sin puntos, con guión)"
+          control={control}
+          rules={{
+            required: "Campo obligatorio",
+            pattern: {
+              value: /^\d{7,8}-[0-9Kk]$/,
+              message: "Ingresa un rut válido",
+            },
+          }}
+        />
+        <InputField
+          name="fecha_nacimiento"
+          label="Fecha de nacimiento"
+          type="date"
+          control={control}
+          rules={{
+            required: "Campo obligatorio",
+            pattern: {
+              message: "Ingresa una fecha válida",
+            },
+          }}
+        />
+        <SelectField
+          name="genero"
+          control={control}
+          label="Género"
+          options={generoChoices}
+          isMulti={false}
+          rules={{ required: "Campo obligatorio" }}
+          placeholder="Selecciona el género"
+        />
+        <InputField
+          name="email"
+          label="Correo electrónico"
+          type="email"
+          placeholder="Ingresa el correo electrónico"
+          control={control}
+          rules={{
+            required: "Campo obligatorio",
+            pattern: {
+              value: /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/,
+              message: "Ingresa un email válido",
+            },
+          }}
+        />
+        <InputField
+          name="telefono"
+          label="Teléfono"
+          type="text"
+          placeholder="+56912345678"
+          control={control}
+          rules={{
+            required: "Campo obligatorio",
+            pattern: {
+              value: /^\+\d{8,15}$/,
+              message: "Ingresa un número de teléfono válido",
+            },
+          }}
+        />
+        <SelectField
+          name="region"
+          control={control}
+          label="Región"
+          options={regiones}
+          isMulti={false}
+          rules={{ required: "Campo obligatorio" }}
+          placeholder="Selecciona una región"
+        />
+        <SelectField
+          name="ciudad"
+          control={control}
+          label="Ciudad"
+          options={ciudades}
+          isMulti={false}
+          rules={{ required: "Campo obligatorio" }}
+          placeholder="Selecciona una ciudad"
+        />
+        <SelectField
+          name="comuna"
+          control={control}
+          label="Comuna"
+          options={comunas}
+          isMulti={false}
+          rules={{ required: "Campo obligatorio" }}
+          placeholder="Selecciona una comuna"
+        />
+        <SelectField
+          name="especialidad"
+          control={control}
+          label="Especialidad"
+          options={especialidad}
+          isMulti={true}
+          rules={{ required: "Campo obligatorio" }}
+          placeholder="Selecciona una o más especialidades"
+        />
+        <SelectField
+          name="prevision"
+          control={control}
+          label="Previsión"
+          options={previsiones}
+          isMulti={false}
+          rules={{ required: "Campo obligatorio" }}
+          placeholder="Selecciona una previsión"
+        />
+        <div>
           <label>Avatar</label>
           <input
             type="file"
             name="avatar"
             required
             className="p-2 border rounded"
-            {...register("avatar", { required: "Campo obligatorio" })}/>        
-          <button
-            type="submit"
-            className="mt-6 bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-700 transition"
-          >
-            Crear cuenta
-          </button>
-          <button onClick={desplegar}>datos</button>
-        </form>
-      </div>
+            {...register("avatar", { required: "Campo obligatorio" })}
+          />
+        </div>
+        <div></div>
+        <div></div>
+        <Button type="submit">Crear cuenta</Button>
+      </Formulario>
     </div>
   );
 };

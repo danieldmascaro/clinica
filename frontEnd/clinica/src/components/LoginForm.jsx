@@ -4,16 +4,17 @@ import { Link, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import InputField from "./InputField";
 import Button from "./Button";
+import Formulario from "./Formulario";
 
 
 function LoginForm() {
-  const { register, handleSubmit, formState: { errors }, control } = useForm(); // Gestión del formulario
+  const { register, handleSubmit, formState: { errors }, control } = useForm();
   const location = useLocation();
   const loginType = location.state?.loginType;
   const handleLogin = async (data) => {
     try {
       await login(data.email, data.password); 
-      console.log(data.rut);
+      console.log(data.email);
       window.location.replace('/redireccionlogin');
     } catch (err) {
       alert(err);
@@ -21,18 +22,14 @@ function LoginForm() {
   };
 
   return (
-    <div className="flex justify-center">
-      <div
-        className="flex justify-center flex-col items-center gap-4 rounded-xl
-         p-10 bg-white mt-15 shadow-2xl"
-      >
-        <h1 className="text-3xl mb-4 font-bold text-blue-700">Inicio de sesión</h1>
-        <form onSubmit={handleSubmit(handleLogin)} className="flex flex-col h-max gap-2">
+    <div className="flex justify-center items-center">
+        <Formulario titulo="Inicio de sesión" onSubmit={handleSubmit(handleLogin)}>
           <InputField
             name="email"
             label="Correo electrónico:"
             type="email"
             placeholder="Ingresa tu correo electrónico"
+            autoComplete="username"
             control={control}
             rules={{
               required: "Campo obligatorio",
@@ -47,6 +44,7 @@ function LoginForm() {
             name="password"
             label="Contraseña:"
             type="password"
+            autoComplete="current-password"
             placeholder="Ingresa tu contraseña"
             control={control}
             rules={{
@@ -58,12 +56,14 @@ function LoginForm() {
               },
             }}
           />
-          <div className="flex justify-between text-xs font-bold">
-            <div className="flex justify-around gap-1">
+          <div className="flex justify-between gap-2 mb-2">
+            <div className="flex justify-around gap-1 text-xs font-bold">
               <input type="checkbox" {...register("recordar")} />
               <p>Recordar</p>
             </div>
+            <div className="text-xs">
             <Link to="/cambiarcontrasena">¿Olvidaste tu contraseña?</Link>
+            </div>
           </div>
           <Button type="submit">Iniciar sesión</Button>
             {loginType === "paciente" || !loginType && (
@@ -76,12 +76,9 @@ function LoginForm() {
             {loginType === "admin" && (
               <></>
             )
-
             }
-        </form>
+        </Formulario>
       </div>
-    </div>
   );
 }
-
 export default LoginForm;

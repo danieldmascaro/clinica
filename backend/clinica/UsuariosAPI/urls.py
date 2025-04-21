@@ -5,9 +5,11 @@ from .views import homeView, get_csrf_token, get_tipo_usuario
 
 router = routers.DefaultRouter()
 
-router.register('api/usuarios', CustomUserViewSet, 'Administradores')
+router.register('api/usuarios', CustomUserViewSet, 'Usuarios')
 router.register('api/medicos', MedicoViewSet, 'Medicos')
+router.register('api/medicos-select', MedicoIdNombreViewSet, 'MedicosIdNombre')
 router.register('api/especialidad', EspecialidadViewSet, 'Especialidad')
+router.register('api/horas-disponibles', HoraDisponibleViewSet, 'HorasDisponibles')
 router.register('api/regiones', RegionViewSet, 'Regiones')
 router.register('api/ciudades', CiudadViewSet, 'Ciudades')
 router.register('api/comunas', ComunaViewSet, 'Comunas')

@@ -15,6 +15,7 @@ import CrearMedico from "./pages/create/CrearMedico";
 import RedireccionLogin from "./components/RedireccionLogin";
 import CambiarContrasena from "./components/CambiarContrasena";
 import CrearPasswordMedico from "./components/CrearPasswordMedico";
+import HorasDisponibles from "./pages/citas/HorasDisponibles";
 
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
             <Route path="/redireccionlogin" element={<RedireccionLogin/>} />
             <Route path="/cambiarcontrasena" element={<CambiarContrasena/>} />
             <Route path="/crearpassmedico" element={<CrearPasswordMedico/>} />
+            <Route path="/calendario-horas" element={<HorasDisponibles/>} />
           </Routes>
         </main>
       </AuthProvider>
